@@ -1,0 +1,13 @@
+{
+  "RotationMultiplier": 1,
+  "Radius": 443.20001220703125,
+  "RatioRadius": 0.800000011920929,
+  "LineWeight": 1.6800000667572021,
+  "NbLines": 19,
+  "NbSteps": 8,
+    "StartAngle": 90,
+  "Rotation": 19.080001831054688,
+  "Mirror": true,
+  "NbStepsMultiplier": 1,
+  "RatioWeight": 0.8440000414848328
+}
