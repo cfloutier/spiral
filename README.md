@@ -3,6 +3,10 @@
 Create Spirals drawing using processing.
 
 <img src="./images/example1.png" alt="Example 1" width="400"/>
+<img src="./images/example2.png" alt="Example 1" width="400"/>
+<img src="./images/example3.png" alt="Example 1" width="400"/>
+<img src="./images/example4.png" alt="Example 1" width="400"/>
+
 
 # UI
 
@@ -15,6 +19,7 @@ The top button are Tabs.
 * **Files** is used to laod and save file.
 
 ## Controls
+
 * **Nb Line** : the number of lines. sipateched orund a circle
 * **Nb Steps** : nb of iteration step.
 * **Nb Steps Multiplier** : Nb step multiplcation (to have very high number of iterations)
@@ -34,6 +39,8 @@ the **"Saved"** Folder contain example of settings useful for starting and under
 
 you can alose export to differents formats : (svg, pdf and dxf)
 the **"Export"** directory contains differents example of export
+
+
 
 # drawing to paper
 
