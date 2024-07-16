@@ -1,13 +1,18 @@
 {
-  "RotationMultiplier": 1,
-  "Radius": 475.2000427246094,
-  "RatioRadius": 0.914400041103363,
-  "LineWeight": 1.6800000667572021,
-  "NbLines": 5,
-  "NbSteps": 49,
-    "StartAngle": 90,
-  "Rotation": 10.440000534057617,
-  "Mirror": true,
-  "NbStepsMultiplier": 1,
-  "RatioWeight": 1
+    "Style": {
+        "backgroundColor": -16118253,
+        "lineColor": -2659,
+        "lineWidth": 0.9833333492279053
+    },
+    "Main": {
+        "RotationMultiplier": 1,
+        "Radius": 475.2000427246094,
+        "RatioRadius": 0.914400041103363,
+        "NbLines": 5,
+        "NbSteps": 49,
+        "StartAngle": 90,
+        "Rotation": 10.440000534057617,
+        "Mirror": true,
+        "NbStepsMultiplier": 1
+    }
 }
