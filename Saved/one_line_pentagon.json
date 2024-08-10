@@ -1,0 +1,19 @@
+{
+  "Style": {
+    "backgroundColor": -16118253,
+    "lineColor": -2659,
+    "lineWidth": 0.9833333492279053
+  },
+  "Main": {
+    "RotationMultiplier": 1,
+    "Radius": 314.66668701171875,
+    "RatioRadius": 0.972000002861023,
+    "StartAngle": 106.80000305175781,
+    "NbLines": 1,
+    "NbSteps": 73,
+    "Rotation": 75,
+    "Mirror": false,
+    "NbStepsMultiplier": 2,
+    "RotationTwitch": -0.5
+  }
+}

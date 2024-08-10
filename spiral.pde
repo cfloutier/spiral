@@ -25,9 +25,6 @@ void setup()
   data.name = "default";
 
   dataGui.setGUIValues();
-  surface.setResizable(true);
-
- 
 
   surface.setResizable(true);
 }
@@ -46,12 +43,15 @@ void draw()
 {
   start_draw();
 
-  if (data.changed)
+  if (!record && data.changed)
   {
     dataGui.updateUI();
   }
   
   drawer.center = new PVector(width/2, height/2);
+  
+  if (record)
+    print("pause")
 
   drawer.data = data;
   drawer.draw();
