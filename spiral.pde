@@ -50,9 +50,6 @@ void draw()
   
   drawer.center = new PVector(width/2, height/2);
   
-  if (record)
-    print("pause")
-
   drawer.data = data;
   drawer.draw();
 
