@@ -7,7 +7,7 @@ class DrawingGenerator
 
   void drawPolarLine(float radius1, float angle1, float radius2, float angle2)
   {
-    line(center.x+radius1*cos(radians(angle1)), center.y+radius1*sin(radians(angle1)), center.x+radius2*cos(radians(angle2)), center.y+radius2*sin(radians(angle2)));
+    current_graphics.line(center.x+radius1*cos(radians(angle1)), center.y+radius1*sin(radians(angle1)), center.x+radius2*cos(radians(angle2)), center.y+radius2*sin(radians(angle2)));
   }
 
   void drawOneLine(int steps, float angle, float deltaRot)
