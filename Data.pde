@@ -1,6 +1,6 @@
 import controlP5.*; 
 
-class Data
+class SpiralsData extends DataGlobal
 {
   String name = "";
 
@@ -9,75 +9,41 @@ class Data
   Style style = new Style();
   DataMain main = new DataMain();
 
-  float width = 800;
-  float height = 600;
-
-  void setSize(float width, float height)
+  SpiralsData()
   {
-    if (this.width != width)
-    {
-      changed = true;
-      this.width = width;
-    }
+    addChapter(main);
+    addChapter(style);
 
-    if (this.height != height)
-    {
-      changed = true;
-      this.height = height;
-    }
   }
 
-  void LoadJson(String path)
+  void reset()
   {
-    print("path" + path);
-
-    JSONObject json = loadJSONObject(path);
-
-    main.LoadJson(json.getJSONObject("Main"));
-    style.LoadJson(json.getJSONObject("Style"));
-  }
-
-  void SaveJson(String path)
-  {
-    JSONObject json = new JSONObject();
-
-    json.setJSONObject("Style", style.SaveJson());
-    json.setJSONObject("Main", main.SaveJson());
-
-    saveJSONObject(json, path);
+    main.CopyFrom(new DataMain());
+    
   }
 }
 
-
-
-class DataGUI
+class DataGUI extends MainPanel
 {
-  StyleGUI style = new StyleGUI();
-  MainGUI main = new MainGUI(); 
-  
-  void updateUI()
+  SpiralsData data;
+
+  MainGUI main_ui;
+  StyleGUI style_ui;
+
+  public DataGUI(SpiralsData data)
   {
-    if (!data.changed)
-      return;
+    this.data = data;
 
-    main.update();
-    style.update();
+    main_ui = new MainGUI(data.main); 
+    style_ui = new StyleGUI(data.style); 
   }
+  
+  void Init()
+  {
+    addTab(style_ui);
+    addTab(main_ui);
+    super.Init();
 
-  void setupControls(ControlP5 cp5)
-  { 
-    cp5.addTab("Style");
-    cp5.addTab("Main");
-    
-    main.setupControls( cp5 );    
-    style.setupControls( cp5 );   
-    
     cp5.getTab("Main").bringToFront();
-  }
-  
-  void setGUIValues()
-  {
-    style.setGUIValues();
-    main.setGUIValues();
-  }
-}
+  } 
+} 

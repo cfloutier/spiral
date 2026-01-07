@@ -1,9 +1,8 @@
-//<>// //<>//
 class DrawingGenerator
 {
-  Data data;
+  SpiralsData data;
 
-  PVector center = new PVector(400, 400);
+  PVector center = new PVector(0, 0);
 
   void drawPolarLine(float radius1, float angle1, float radius2, float angle2)
   {

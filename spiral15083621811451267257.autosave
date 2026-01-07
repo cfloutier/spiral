@@ -31,32 +31,27 @@ void setup()
 
 void setupControls()
 { 
-  cp5 = new ControlP5(this);
+  cp5 = new ControlP5(this); 
   cp5.getTab("default").setLabel("Hide GUI");
+
+    dataGui.setupControls( cp5);     
   addFileTab();
-  dataGui.Init();
 }
+
 
 void draw()
 {
   start_draw();
 
-  // recenter
-  pushMatrix();
-  translate(width/2, height/2);
-  scale(data.global_scale,data.global_scale);
- // translate(-width/2, -height/2);
-
-  if (data.changed)
+  if (!record && data.changed)
   {
-    dataGui.update_ui();
+    dataGui.updateUI();
   }
   
-  // drawer.center = new PVector(width/2, height/2);
+  drawer.center = new PVector(width/2, height/2);
   
   drawer.data = data;
   drawer.draw();
 
-  popMatrix();
   end_draw();
 }
