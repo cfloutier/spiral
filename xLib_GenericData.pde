@@ -142,6 +142,10 @@ class DataGlobal
   float width = 800;
   float height = 600;
   float global_scale = 1;
+
+  boolean crop = false;
+  float crop_width = 800;
+  float crop_height = 600;
   
   void reset()
   {

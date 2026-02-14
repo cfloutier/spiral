@@ -1,5 +1,8 @@
 import java.util.Locale;
 
+Slider slider_crop_width;
+Slider slider_crop_height;
+
 void addFileTab()
 {
   cp5.addTab("Files");
@@ -60,14 +63,63 @@ void addFileTab()
     .setPosition(xPos, yPos)
     .setSize(widthButton, heightButton)
     .moveTo("Files");
+
+  xPos = 0;
+  yPos += heightButton+20;
+
+  cp5.addToggle("Crop")
+    .setPosition(xPos, yPos)
+    .setSize(widthButton, heightButton)
+    .moveTo("Files")
+    .getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE).setPaddingX(0);
     
+  xPos = 0;
+  yPos += heightButton+10;
+
+  slider_crop_width = cp5.addSlider("crop_width")
+      .setLabel("Width")
+      .setPosition(xPos, yPos)
+      .setSize(200, heightButton)
+      .setRange(0, 2000)
+      .setValue(data.crop_width)  
+      .moveTo("Files")
+      .hide();
+      
+  yPos += heightButton+10;
+ 
+  slider_crop_height = cp5.addSlider("crop_height")
+      .setLabel("Height")
+      .setPosition(xPos, yPos)
+      .setSize(200, heightButton)
+      .setRange(0, 2000)
+      .setValue(data.crop_height)
+      .moveTo("Files")
+      .hide();
+}
+
+void crop_height(float value) {  data.crop_height = value; }
+void crop_width(float value) {  data.crop_width = value; }
+
+void Crop()
+{
+  data.crop = !data.crop;
+
+  if (data.crop)
+  {
+    slider_crop_width.show();
+    slider_crop_height.show();
+  }
+  else 
+  {    
+    slider_crop_width.hide();
+    slider_crop_height.hide();
+  }
 }
 
 ScaleSlider scale_slider;
 
 void Reset_Scale()
 {
-  
   scale_slider.setValue(0);
 }
 
