@@ -147,25 +147,25 @@ void saveSelected(File selection)
   }
 }
 
-boolean record = false;
+boolean _record = false;
 int mode  = 0;
 
 String fileName = "";
 void ExportPDF()
 {
-  record = true;
+  _record = true;
   mode = 0;
 }
 
 void ExportDXF()
 {
-  record = true;
+  _record = true;
   mode = 1;
 }  
 
 void ExportSVG()
 {
-  record = true;
+  _record = true;
   mode = 2;
 }
 
@@ -181,7 +181,7 @@ void start_draw()
     data.changed = false;
   }
 
-  if (record) 
+  if (_record) 
   {
     String name = data.name;
     if (name == "")
@@ -229,10 +229,10 @@ void start_draw()
 
 void end_draw()
 {
-  if (record) 
+  if (_record) 
   {
     current_graphics.dispose();
     current_graphics.endDraw();
-    record = false;
+    _record = false;
   }
 }

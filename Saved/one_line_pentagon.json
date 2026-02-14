@@ -6,14 +6,14 @@
   },
   "Main": {
     "RotationMultiplier": 1,
-    "Radius": 314.66668701171875,
-    "RatioRadius": 0.972000002861023,
-    "StartAngle": 106.80000305175781,
+    "Radius": 11.200000762939453,
+    "RatioRadius": 1.009600043296814,
+    "StartAngle": 0,
     "NbLines": 1,
-    "NbSteps": 73,
-    "Rotation": 75,
+    "NbSteps": 84,
+    "Rotation": 101.16000366210938,
     "Mirror": false,
-    "NbStepsMultiplier": 2,
-    "RotationTwitch": -0.5
+    "NbStepsMultiplier": 7,
+    "RotationTwitch": 1
   }
 }
