@@ -1,5 +1,22 @@
 import java.util.Locale;
 
+class DataPage extends GenericData
+{
+
+  float global_scale = 1;
+
+  boolean crop = true;
+  float crop_width = 800;
+  float crop_height = 600;
+
+  DataPage() { 
+    super("Page");
+
+  }
+}
+
+
+
 Slider slider_crop_width;
 Slider slider_crop_height;
 
@@ -81,7 +98,7 @@ void addFileTab()
       .setPosition(xPos, yPos)
       .setSize(200, heightButton)
       .setRange(0, 2000)
-      .setValue(data.crop_width)  
+      .setValue(data.page.crop_width)  
       .moveTo("Files")
       .hide();
       
@@ -92,19 +109,19 @@ void addFileTab()
       .setPosition(xPos, yPos)
       .setSize(200, heightButton)
       .setRange(0, 2000)
-      .setValue(data.crop_height)
+      .setValue(data.page.crop_height)
       .moveTo("Files")
       .hide();
 }
 
-void on_crop_height(float value) {  data.crop_height = value; }
-void on_crop_width(float value) {  data.crop_width = value; }
+void on_crop_height(float value) {  data.page.crop_height = value; }
+void on_crop_width(float value) {  data.page.crop_width = value; }
 
 void onCrop()
 {
-  data.crop = !data.crop;
+  data.page.crop = !data.page.crop;
 
-  if (data.crop)
+  if (data.page.crop)
   {
     slider_crop_width.show();
     slider_crop_height.show();
@@ -136,15 +153,14 @@ public class ScaleSlider extends Slider{
     float value =  getValue();
     if (value >= 0)
     {
-       data.global_scale = 1 + value;
+       data.page.global_scale = 1 + value;
        getValueLabel().setText(String.format(Locale.US, " x %.1f", 1 + value));
     }
     else
     {
-      data.global_scale = 1 / (1-value);
+      data.page.global_scale = 1 / (1-value);
       getValueLabel().setText(String.format(Locale.US, " / %.1f", 1 - value));
     }
-    
   }
 
   @Override public Slider setValue( float theValue ) {

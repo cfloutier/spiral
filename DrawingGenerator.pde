@@ -8,7 +8,7 @@ class DrawingGenerator //<>//
   
   void line(float xFrom, float yFrom, float xTo, float yTo)
   {
-     if (data.crop) 
+     if (data.page.crop) 
      {
         float[] clipped = new float[4];
         //println("clipLineToCenteredRect " + xFrom + "," + yFrom + " to " + xTo + "," + yTo);
@@ -28,8 +28,8 @@ class DrawingGenerator //<>//
   // Returns true and fills out[0..3] = {x1,y1,x2,y2} when a clipped segment exists.
   boolean clipLineToCenteredRect(float xFrom, float yFrom, float xTo, float yTo, float[] out)
   {
-    float halfW = data.crop_width * 0.5;
-    float halfH = data.crop_height * 0.5;
+    float halfW = data.page.crop_width * 0.5;
+    float halfH = data.page.crop_height * 0.5;
     float xmin = center.x - halfW;
     float xmax = center.x + halfW;
     float ymin = center.y - halfH;

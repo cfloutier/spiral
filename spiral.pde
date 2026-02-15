@@ -44,7 +44,7 @@ void draw()
   // recenter
   pushMatrix();
   translate(width/2, height/2);
-  scale(data.global_scale,data.global_scale);
+  scale(data.page.global_scale,data.page .global_scale);
  // translate(-width/2, -height/2);
 
   if (data.changed)
