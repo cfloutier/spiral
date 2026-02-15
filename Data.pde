@@ -44,6 +44,6 @@ class DataGUI extends MainPanel
     addTab(main_ui);
     super.Init();
 
-    cp5.getTab("Main").bringToFront();
+    cp5.getTab("Files").bringToFront();
   } 
 } 

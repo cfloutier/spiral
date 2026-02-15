@@ -67,7 +67,7 @@ void addFileTab()
   xPos = 0;
   yPos += heightButton+20;
 
-  cp5.addToggle("Crop")
+  cp5.addToggle("onCrop")
     .setPosition(xPos, yPos)
     .setSize(widthButton, heightButton)
     .moveTo("Files")
@@ -76,7 +76,7 @@ void addFileTab()
   xPos = 0;
   yPos += heightButton+10;
 
-  slider_crop_width = cp5.addSlider("crop_width")
+  slider_crop_width = cp5.addSlider("on_crop_width")
       .setLabel("Width")
       .setPosition(xPos, yPos)
       .setSize(200, heightButton)
@@ -87,7 +87,7 @@ void addFileTab()
       
   yPos += heightButton+10;
  
-  slider_crop_height = cp5.addSlider("crop_height")
+  slider_crop_height = cp5.addSlider("on_crop_height")
       .setLabel("Height")
       .setPosition(xPos, yPos)
       .setSize(200, heightButton)
@@ -97,10 +97,10 @@ void addFileTab()
       .hide();
 }
 
-void crop_height(float value) {  data.crop_height = value; }
-void crop_width(float value) {  data.crop_width = value; }
+void on_crop_height(float value) {  data.crop_height = value; }
+void on_crop_width(float value) {  data.crop_width = value; }
 
-void Crop()
+void onCrop()
 {
   data.crop = !data.crop;
 
@@ -125,8 +125,6 @@ void Reset_Scale()
 
 //subclass slider
 public class ScaleSlider extends Slider{
-
-
   //constructor
   public ScaleSlider( ControlP5 cp5 , String name ) {
     super(cp5,name);
@@ -148,8 +146,6 @@ public class ScaleSlider extends Slider{
     }
     
   }
-  
-  
 
   @Override public Slider setValue( float theValue ) {
     super.setValue(theValue);

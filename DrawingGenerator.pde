@@ -11,10 +11,10 @@ class DrawingGenerator //<>//
      if (data.crop) 
      {
         float[] clipped = new float[4];
-        println("clipLineToCenteredRect " + xFrom + "," + yFrom + " to " + xTo + "," + yTo);
+        //println("clipLineToCenteredRect " + xFrom + "," + yFrom + " to " + xTo + "," + yTo);
         if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, clipped))
         {
-          println("clipped to " + clipped[0] + "," + clipped[1] + " to " + clipped[2] + "," + clipped[3]);
+          //println("clipped to " + clipped[0] + "," + clipped[1] + " to " + clipped[2] + "," + clipped[3]);
 
           current_graphics.line(clipped[0], clipped[1], clipped[2], clipped[3]);
         }
