@@ -1,4 +1,11 @@
 {
+    "Page": {
+        "clipping": false,
+        "clip_width": 753.3333129882812,
+        "name": "",
+        "clip_height": 546.6666870117188,
+        "global_scale": 1
+    },
     "Style": {
         "backgroundColor": -16118253,
         "lineColor": -2659,

@@ -4,6 +4,13 @@
         "lineColor": -2659,
         "lineWidth": 0.9833333492279053
     },
+    "Page": {
+        "clipping": false,
+        "clip_width": 753.3333129882812,
+        "name": "",
+        "clip_height": 546.6666870117188,
+        "global_scale": 1
+    },
     "Main": {
         "RotationMultiplier": 2,
         "Radius": 6.400000095367432,

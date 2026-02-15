@@ -1,12 +1,13 @@
 
 class DataGlobal
 {
-    DataGlobal()
-    {
-        println(  "xLib version : " + get_xlib_version());
+  DataGlobal()
+  {
+    println("xLib version : " + get_xlib_version());
 
-    }
-
+    page = new DataPage();
+    chapters.add(page);
+  }
 
   String name = "";
   String settings_path = "";
@@ -22,10 +23,10 @@ class DataGlobal
   float height = 600;
 
   DataPage page = new DataPage();
-  
+
   void reset()
   {
-      println("error calling base reset");
+    println("error calling base reset");
   }
 
   void setSize(float width, float height)
@@ -70,10 +71,11 @@ class DataGlobal
     data.name = getFileNameWithoutExtension(path);
     JSONObject json = loadJSONObject(path);
 
+
     for (GenericData chapter : chapters) {
       chapter.LoadJson(json.getJSONObject(chapter.chapter_name));
     }
-    
+
     changed = true;
   }
 
@@ -111,7 +113,7 @@ class DataGlobal
       if (chapter.changed)
         return true;
     }
-  
+
     return false;
   }
 
@@ -121,7 +123,6 @@ class DataGlobal
     for (GenericData chapter : chapters) {
       chapter.changed = false;
     }
-    
-    
   }
 }
+

@@ -1,18 +1,26 @@
 {
-    "Style": {
-        "backgroundColor": -16118253,
-        "lineColor": -2659,
-        "lineWidth": 0.9833333492279053
-    },
-    "Main": {
-        "RotationMultiplier": 2,
-        "Radius": 800,
-        "RatioRadius": 1.068000078201294,
-        "StartAngle": 23.040000915527344,
-        "NbLines": 8,
-        "NbSteps": 57,
-        "Rotation": 88.92000579833984,
-        "Mirror": true,
-        "NbStepsMultiplier": 1
-    }
+  "Style": {
+    "backgroundColor": -16118253,
+    "lineColor": -2659,
+    "lineWidth": 0.9833333492279053
+  },
+  "Page": {
+    "clipping": true,
+    "clip_width": 1220,
+    "name": "",
+    "clip_height": 1160.0001220703125,
+    "global_scale": 0.4950496256351471
+  },
+  "Main": {
+    "RotationMultiplier": 2,
+    "Radius": 800,
+    "RatioRadius": 1.0813333988189697,
+    "StartAngle": 23.040000915527344,
+    "NbLines": 8,
+    "NbSteps": 56,
+    "Rotation": 92.39999389648438,
+    "Mirror": true,
+    "NbStepsMultiplier": 1,
+    "RotationTwitch": -1.059999942779541
+  }
 }

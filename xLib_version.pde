@@ -1,12 +1,16 @@
 String get_xlib_version()
 {
-    return "2.2.0";
+    return "2.2.2";
 }
 
 
 /*
 
 ## CHANGELOG
+
+## [2.2.2] - 2025-02-12
+- refacto complete de la gestion des Fichier : UI + data avec l'ajout des slider clipping et scale. sauvegardables enfin
+
 ## [2.2.0] - 2024-06-30
 # - added get_xlib_version() function to return the current version of xLib. This
 #   can be used for debugging and to ensure compatibility with different versions of xLib.
