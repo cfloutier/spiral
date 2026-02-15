@@ -1,6 +1,13 @@
 
 class DataGlobal
 {
+    DataGlobal()
+    {
+        println(  "xLib version : " + get_xlib_version());
+
+    }
+
+
   String name = "";
   String settings_path = "";
 

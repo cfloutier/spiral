@@ -1,5 +1,18 @@
 String get_xlib_version()
 {
-    return "xLib version 1.0.0";
+    return "2.2.0";
 }
 
+
+/*
+
+## CHANGELOG
+## [2.2.0] - 2024-06-30
+# - added get_xlib_version() function to return the current version of xLib. This
+#   can be used for debugging and to ensure compatibility with different versions of xLib.
+
+## [2.1.0] - 2024-05-15
+# - added support for global scale in the DataPage class. This allows users to scale the entire page, which can be useful for printing or exporting to PDF/SVG. The global scale can be adjusted using a slider in the UI.
+
+
+*/
