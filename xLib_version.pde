@@ -1,12 +1,15 @@
 String get_xlib_version()
 {
-    return "2.2.2";
+    return "2.2.3";
 }
 
 
 /*
 
-## CHANGELOG
+# CHANGELOG
+
+## [2.2.2] - 2025-02-28
+- micro nettoyage
 
 ## [2.2.2] - 2025-02-12
 - refacto complete de la gestion des Fichier : UI + data avec l'ajout des slider clipping et scale. sauvegardables enfin
