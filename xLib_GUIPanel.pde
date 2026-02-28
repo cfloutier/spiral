@@ -34,6 +34,64 @@ class myRadioButton extends RadioButton
 
 }
 
+// helper class used by panels (e.g. LinesGUI) to group related controls
+// and synchronize their values with a DataLines instance via reflection.
+// Usage:
+//   ControlsGroup group = new ControlsGroup(dataLines);
+//   group.add(addSlider("fieldName", "Label", min, max));
+//   // later, in setGUIValues():
+//   group.updateFromData();
+//   // in update_ui():
+//   group.show() or group.hide() depending on type
+// The class skips Button controllers and only updates Slider/Toggle values.
+
+class ControlsGroup {
+  ArrayList<Controller> controllers = new ArrayList<Controller>();
+  GenericData data;
+  
+  ControlsGroup(GenericData data) {
+    this.data = data;
+  }
+  
+  void add(Controller c) {
+    controllers.add(c);
+  }
+  
+  void show() {
+    for (Controller c : controllers) c.show();
+  }
+  
+  void hide() {
+    for (Controller c : controllers) c.hide();
+  }
+  
+  void updateFromData() {
+    for (Controller c : controllers) {
+      // Skip buttons and other non-value controls
+      if (c instanceof Button) continue;
+      
+      String fieldName = c.getName();
+      try {
+        java.lang.reflect.Field dataField = data.getClass().getDeclaredField(fieldName);
+        dataField.setAccessible(true);
+        Object value = dataField.get(data);
+        
+        if (c instanceof Slider) {
+          Slider slider = (Slider) c;
+          slider.setValue(((Number) value).floatValue());
+        } else if (c instanceof Toggle) {
+          Toggle toggle = (Toggle) c;
+          toggle.setValue((Boolean) value);
+        }
+      } catch (Exception e) {
+        println("Error updating " + fieldName + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+      }
+    }
+  }
+}
+
+
+
 class GUIPanel implements ControlListener
 {
   String pageName;
