@@ -1,22 +1,22 @@
 {
   "Style": {
-    "backgroundColor": -16118253,
-    "lineColor": -2659,
+    "backgroundColor": -1,
+    "lineColor": -13877680,
     "lineWidth": 0.9833333492279053
   },
   "Page": {
     "clipping": true,
     "clip_width": 873.3333129882812,
     "name": "",
-    "clip_height": 993.3333129882812,
-    "global_scale": 0.4545454978942871
+    "clip_height": 866.6666870117188,
+    "global_scale": 0.6470590233802795
   },
   "Main": {
     "RotationMultiplier": 2,
-    "Radius": 651.2000122070312,
+    "Radius": 344,
     "RatioRadius": 1.0672000646591187,
     "StartAngle": 31.680002212524414,
-    "NbLines": 9,
+    "NbLines": 13,
     "NbSteps": 18,
     "Rotation": 97.92000579833984,
     "Mirror": true,
