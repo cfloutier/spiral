@@ -41,68 +41,79 @@ class Polyline
   {
     return points.get(index);
   }
-}
 
-// Extended Polyline with per-point validity and Y offset for line-based rendering
-// Used by: perlin_mountains
-class ValidatedPolylineWithOffset extends Polyline
-{
-  boolean[] validity = null;
-  float y_offset = 0;
-
-  void setValidity(boolean[] valid)
+  void print()
   {
-    this.validity = valid;
-  }
-
-  void setYOffset(float offset)
-  {
-    this.y_offset = offset;
-  }
-
-  void draw()
-  {
-    if (points.size() < 1)
-      return;
-
-    if (validity == null)
-    {
-      // No validity check, draw as simple polyline
-      super.draw();
-      return;
-    }
-
-    // Draw with validity checks - may create multiple line segments
-    current_graphics.noFill();
-    boolean drawing = false;
-
+    String s = "Polyline: ";
     for (int i = 0; i < points.size(); i++)
     {
-      boolean valid = validity[i];
-      if (valid)
-      {
-        PVector p = points.get(i);
-        if (!drawing)
-        {
-          drawing = true;
-          current_graphics.beginShape();
-        }
-
-        current_graphics.vertex(p.x, p.y + y_offset);
-      }
-      else
-      {
-        if (drawing)
-        {
-          drawing = false;
-          current_graphics.endShape();
-        }
-      }
+      PVector p = points.get(i);
+      s += "[" + p.x + "," + p.y + "]";
     }
 
-    if (drawing)
-    {
-      current_graphics.endShape();
-    }
+    println(s);
   }
 }
+  // Extended Polyline with per-point validity and Y offset for line-based rendering
+  // Used by: perlin_mountains
+  class ValidatedPolylineWithOffset extends Polyline
+  {
+    boolean[] validity = null;
+    float y_offset = 0;
+
+    void setValidity(boolean[] valid)
+    {
+      this.validity = valid;
+    }
+
+    void setYOffset(float offset)
+    {
+      this.y_offset = offset;
+    }
+
+    void draw()
+    {
+      if (points.size() < 1)
+        return;
+
+      if (validity == null)
+      {
+        // No validity check, draw as simple polyline
+        super.draw();
+        return;
+      }
+
+      // Draw with validity checks - may create multiple line segments
+      current_graphics.noFill();
+      boolean drawing = false;
+
+      for (int i = 0; i < points.size(); i++)
+      {
+        boolean valid = validity[i];
+        if (valid)
+        {
+          PVector p = points.get(i);
+          if (!drawing)
+          {
+            drawing = true;
+            current_graphics.beginShape();
+          }
+
+          current_graphics.vertex(p.x, p.y + y_offset);
+        } else
+        {
+          if (drawing)
+          {
+            drawing = false;
+            current_graphics.endShape();
+          }
+        }
+      }
+
+      if (drawing)
+      {
+        current_graphics.endShape();
+      }
+    }
+  }
+

@@ -9,34 +9,88 @@ class SpiralGenerator //<>//
     lines = new ArrayList<SpiralLine>();
   }
 
-  void addLineSegment(SpiralLine line, float xFrom, float yFrom, float xTo, float yTo)
+  boolean isPointInClipRect(float x, float y)
   {
-    if (data.page.clipping) 
-    {
-      float[] clipped = new float[4];
-      if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, 
-                                 center.x, center.y, 
-                                 data.page.clip_width, data.page.clip_height, clipped))
-      {
-        line.addPoint(new PVector(clipped[0], clipped[1]));
-        line.addPoint(new PVector(clipped[2], clipped[3]));
-      }
-    }
-    else
+    return pointInClipRect(x, y, center.x, center.y, data.page.clip_width, data.page.clip_height);
+  }
+
+  SpiralLine addLineSegment(SpiralLine line, float xFrom, float yFrom, float xTo, float yTo)
+  {
+    if (!data.page.clipping) 
     {
       line.addPoint(new PVector(xFrom, yFrom));
       line.addPoint(new PVector(xTo, yTo));
+      return line;
     }
+
+    boolean fromInside = isPointInClipRect(xFrom, yFrom);
+    boolean toInside = isPointInClipRect(xTo, yTo);
+    float[] clipped = new float[4];
+    boolean hasClipped = clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, 
+                                                center.x, center.y, 
+                                                data.page.clip_width, data.page.clip_height, clipped);
+
+    if (fromInside && toInside)
+    {
+      // Les deux points dedans → ajouter le segment entier
+      line.addPoint(new PVector(xFrom, yFrom));
+      line.addPoint(new PVector(xTo, yTo));
+    }
+    else if (fromInside && !toInside)
+    {
+      // Dedans → Dehors: ajouter jusqu'au bord puis fermer la ligne
+      if (hasClipped)
+      {
+        line.addPoint(new PVector(clipped[2], clipped[3])); // Point de sortie
+      }
+      if (line.points.size() >= 2)
+      {
+        lines.add(line);
+      }
+      line = new SpiralLine();
+    }
+    else if (!fromInside && toInside)
+    {
+      // Dehors → Dedans: créer nouvelle ligne avec le point d'entrée
+      if (hasClipped)
+      {
+        if (line.points.size() >= 2)
+        {
+          lines.add(line);
+        }
+        line = new SpiralLine();
+        line.addPoint(new PVector(clipped[0], clipped[1])); // Point d'entrée
+        line.addPoint(new PVector(xTo, yTo)); // Point final dedans
+      }
+    }
+    else // !fromInside && !toInside
+    {
+      // Les deux dehors: vérifier si le segment coupe le rectangle
+      if (hasClipped)
+      {
+        // Le segment traverse → créer nouvelle ligne avec le segment clippé
+        if (line.points.size() >= 2)
+        {
+          lines.add(line);
+        }
+        line = new SpiralLine();
+        line.addPoint(new PVector(clipped[0], clipped[1]));
+        line.addPoint(new PVector(clipped[2], clipped[3]));
+      }
+      // Sinon: complètement dehors → ne rien faire
+    }
+
+    return line;
   }
 
-  void addPolarSegment(SpiralLine line, float radius1, float angle1, float radius2, float angle2)
+  SpiralLine addPolarSegment(SpiralLine line, float radius1, float angle1, float radius2, float angle2)
   {
     float xFrom = center.x + radius1 * cos(radians(angle1));
     float yFrom = center.y + radius1 * sin(radians(angle1));
     float xTo = center.x + radius2 * cos(radians(angle2));
     float yTo = center.y + radius2 * sin(radians(angle2));
     
-    addLineSegment(line, xFrom, yFrom, xTo, yTo);
+    return addLineSegment(line, xFrom, yFrom, xTo, yTo);
   }
 
   void buildOneLine(SpiralLine line, int steps, float angle, float deltaRot)
@@ -47,10 +101,16 @@ class SpiralGenerator //<>//
       float angle2 = angle + deltaRot;
       float radius2 = radius * data.main.RatioRadius;
 
-      addPolarSegment(line, radius, angle, radius2, angle2);
+      line = addPolarSegment(line, radius, angle, radius2, angle2);
 
       angle = angle2;
       radius = radius2;
+    }
+    
+    // Ajouter la dernière ligne seulement si elle a au moins 2 points
+    if (line.points.size() >= 2)
+    {
+      lines.add(line);
     }
   }
 
@@ -75,7 +135,6 @@ class SpiralGenerator //<>//
       SpiralLine spiralLine = new SpiralLine();
       angle = deltaAngle * line + data.main.StartAngle;
       buildOneLine(spiralLine, steps, angle, rotation);
-      lines.add(spiralLine);
     }
 
     if (data.main.Mirror)
@@ -86,7 +145,6 @@ class SpiralGenerator //<>//
         SpiralLine spiralLine = new SpiralLine();
         angle = deltaAngle * line + data.main.StartAngle;
         buildOneLine(spiralLine, steps, angle, rotation);
-        lines.add(spiralLine);
       }
     }
   }
