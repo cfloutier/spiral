@@ -14,7 +14,9 @@ class SpiralGenerator //<>//
     if (data.page.clipping) 
     {
       float[] clipped = new float[4];
-      if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, clipped))
+      if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, 
+                                 center.x, center.y, 
+                                 data.page.clip_width, data.page.clip_height, clipped))
       {
         line.addPoint(new PVector(clipped[0], clipped[1]));
         line.addPoint(new PVector(clipped[2], clipped[3]));
@@ -25,56 +27,6 @@ class SpiralGenerator //<>//
       line.addPoint(new PVector(xFrom, yFrom));
       line.addPoint(new PVector(xTo, yTo));
     }
-  }
-
-  // Clips a line segment to the centered rectangle defined by data.crop_width / data.crop_height.
-  // Returns true and fills out[0..3] = {x1,y1,x2,y2} when a clipped segment exists.
-  boolean clipLineToCenteredRect(float xFrom, float yFrom, float xTo, float yTo, float[] out)
-  {
-    float halfW = data.page.clip_width * 0.5;
-    float halfH = data.page.clip_height * 0.5;
-    float xmin = center.x - halfW;
-    float xmax = center.x + halfW;
-    float ymin = center.y - halfH;
-    float ymax = center.y + halfH;
-
-    float dx = xTo - xFrom;
-    float dy = yTo - yFrom;
-
-    float[] p = { -dx, dx, -dy, dy };
-    float[] q = { xFrom - xmin, xmax - xFrom, yFrom - ymin, ymax - yFrom };
-
-    float u1 = 0.0;
-    float u2 = 1.0;
-
-    for (int i = 0; i < 4; i++)
-    {
-      if (p[i] == 0)
-      {
-        if (q[i] < 0) // parallel and outside
-          return false;
-      }
-      else
-      {
-        float t = q[i] / p[i];
-        if (p[i] < 0)
-        {
-          if (t > u2) return false;
-          if (t > u1) u1 = t;
-        }
-        else
-        {
-          if (t < u1) return false;
-          if (t < u2) u2 = t;
-        }
-      }
-    }
-
-    out[0] = xFrom + u1 * dx;
-    out[1] = yFrom + u1 * dy;
-    out[2] = xFrom + u2 * dx;
-    out[3] = yFrom + u2 * dy;
-    return true;
   }
 
   void addPolarSegment(SpiralLine line, float radius1, float angle1, float radius2, float angle2)
@@ -154,7 +106,7 @@ class SpiralGenerator //<>//
   }
 }
 
-// SpiralLine: polyline for spiral that draws points as individual line segments (point-to-point)
-class SpiralLine extends SegmentedPolyline
+// SpiralLine: polyline for spiral
+class SpiralLine extends Polyline
 {
 }
