@@ -1,11 +1,11 @@
-class DrawingGenerator //<>//
+class SpiralGenerator //<>//
 {
   SpiralsData data;
   ArrayList<SpiralLine> lines;
 
   PVector center = new PVector(0, 0);
   
-  DrawingGenerator()
+  SpiralGenerator()
   {
     lines = new ArrayList<SpiralLine>();
   }

@@ -6,7 +6,7 @@ import processing.svg.*;
 
 SpiralsData data;
 DataGUI dataGui;
-DrawingGenerator drawer;
+SpiralGenerator drawer;
 
 PGraphics current_graphics;
 ControlP5 cp5;
@@ -15,7 +15,7 @@ void setup()
 {
   size(1200, 800);
 
-  drawer =  new DrawingGenerator();
+  drawer =  new SpiralGenerator();
   data = new SpiralsData();
   dataGui = new DataGUI(data);
   
