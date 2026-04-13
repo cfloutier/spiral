@@ -7,20 +7,19 @@
   "Page": {
     "clipping": true,
     "clip_width": 1133.3333740234375,
-    "name": "",
-    "clip_height": 886.6666870117188,
-    "global_scale": 0.7664670944213867
+    "clip_height": 820,
+    "global_scale": 0.6249998807907104
   },
   "Main": {
     "RotationMultiplier": 2,
     "Radius": 29.333335876464844,
     "RatioRadius": 1.1047999858856201,
     "StartAngle": 0,
-    "NbLines": 18,
-    "NbSteps": 21,
+    "NbLines": 22,
+    "NbSteps": 19,
     "Rotation": 44.400001525878906,
     "Mirror": true,
     "NbStepsMultiplier": 2,
-    "RotationTwitch": 2.6399998664855957
+    "RotationTwitch": 2.5999999046325684
   }
 }

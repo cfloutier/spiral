@@ -6,10 +6,9 @@
   },
   "Page": {
     "clipping": true,
-    "clip_width": 1713.3333740234375,
-    "name": "",
-    "clip_height": 1113.3333740234375,
-    "global_scale": 0.5617978572845459
+    "clip_width": 1500,
+    "clip_height": 1046.666748046875,
+    "global_scale": 0.6953126788139343
   },
   "Main": {
     "RotationMultiplier": 1,

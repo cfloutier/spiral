@@ -76,7 +76,7 @@ class MainGUI extends GUIPanel
 
     addLabel("Page");
 
-    NbLines = addIntSlider("NbLines", "Nb of Lines", 1, 36);
+    NbLines = addIntSlider("NbLines", "Nb of Lines", 1, 100);
     nextLine();
     NbSteps = addIntSlider("NbSteps", "Nb Steps", 2, 100);
     NbStepsMultiplier = addIntSlider("NbStepsMultiplier", "Nb Steps Multiplier", 1, 10);

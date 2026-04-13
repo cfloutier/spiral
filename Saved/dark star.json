@@ -1,7 +1,7 @@
 {
   "Style": {
-    "backgroundColor": -16777216,
-    "lineColor": -1,
+    "backgroundColor": -1,
+    "lineColor": -4246004,
     "lineWidth": 0.9833333492279053
   },
   "Page": {
@@ -16,7 +16,7 @@
     "RatioRadius": 1.0640000104904175,
     "StartAngle": 0,
     "NbLines": 13,
-    "NbSteps": 69,
+    "NbSteps": 40,
     "Rotation": 84.5999984741211,
     "Mirror": true,
     "NbStepsMultiplier": 1,

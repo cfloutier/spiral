@@ -1,0 +1,25 @@
+{
+  "Style": {
+    "backgroundColor": -16118253,
+    "lineColor": -2659,
+    "lineWidth": 0.9833333492279053
+  },
+  "Page": {
+    "clipping": false,
+    "clip_width": 753.3333129882812,
+    "clip_height": 546.6666870117188,
+    "global_scale": 1
+  },
+  "Main": {
+    "RotationMultiplier": 1,
+    "Radius": 800,
+    "RatioRadius": 0.9493333697319031,
+    "StartAngle": 90,
+    "NbLines": 89,
+    "NbSteps": 100,
+    "Rotation": 9.600000381469727,
+    "Mirror": false,
+    "NbStepsMultiplier": 1,
+    "RotationTwitch": 0
+  }
+}
