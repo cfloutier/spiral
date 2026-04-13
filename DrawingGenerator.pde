@@ -1,26 +1,31 @@
 class DrawingGenerator //<>//
 {
   SpiralsData data;
+  ArrayList<SpiralLine> lines;
 
   PVector center = new PVector(0, 0);
   
-
-  void line(float xFrom, float yFrom, float xTo, float yTo)
+  DrawingGenerator()
   {
-     if (data.page.clipping) 
-     {
-        float[] clipped = new float[4];
-        //println("clipLineToCenteredRect " + xFrom + "," + yFrom + " to " + xTo + "," + yTo);
-        if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, clipped))
-        {
-          //println("clipped to " + clipped[0] + "," + clipped[1] + " to " + clipped[2] + "," + clipped[3]);
+    lines = new ArrayList<SpiralLine>();
+  }
 
-          current_graphics.line(clipped[0], clipped[1], clipped[2], clipped[3]);
-        }
-        return;
-     }
-    
-      current_graphics.line( xFrom,  yFrom,  xTo,  yTo);
+  void addLineSegment(SpiralLine line, float xFrom, float yFrom, float xTo, float yTo)
+  {
+    if (data.page.clipping) 
+    {
+      float[] clipped = new float[4];
+      if (clipLineToCenteredRect(xFrom, yFrom, xTo, yTo, clipped))
+      {
+        line.addPoint(new PVector(clipped[0], clipped[1]));
+        line.addPoint(new PVector(clipped[2], clipped[3]));
+      }
+    }
+    else
+    {
+      line.addPoint(new PVector(xFrom, yFrom));
+      line.addPoint(new PVector(xTo, yTo));
+    }
   }
 
   // Clips a line segment to the centered rectangle defined by data.crop_width / data.crop_height.
@@ -72,34 +77,36 @@ class DrawingGenerator //<>//
     out[3] = yFrom + u2 * dy;
     return true;
   }
-  
-  
-  
 
-  void drawPolarLine(float radius1, float angle1, float radius2, float angle2)
+  void addPolarSegment(SpiralLine line, float radius1, float angle1, float radius2, float angle2)
   {
-    line(center.x+radius1*cos(radians(angle1)), center.y+radius1*sin(radians(angle1)), center.x+radius2*cos(radians(angle2)), center.y+radius2*sin(radians(angle2)));
+    float xFrom = center.x + radius1 * cos(radians(angle1));
+    float yFrom = center.y + radius1 * sin(radians(angle1));
+    float xTo = center.x + radius2 * cos(radians(angle2));
+    float yTo = center.y + radius2 * sin(radians(angle2));
+    
+    addLineSegment(line, xFrom, yFrom, xTo, yTo);
   }
 
-  void drawOneLine(int steps, float angle, float deltaRot)
+  void buildOneLine(SpiralLine line, int steps, float angle, float deltaRot)
   {
-  
     float radius = data.main.Radius;
     for (int i = 0; i < steps; i++)
     {   
       float angle2 = angle + deltaRot;
       float radius2 = radius * data.main.RatioRadius;
 
-      drawPolarLine(radius, angle, radius2, angle2);
+      addPolarSegment(line, radius, angle, radius2, angle2);
 
       angle = angle2;
       radius = radius2;
-      //weight = weight * data.RatioWeight;
     }
   }
 
-  void draw()
+  void update()
   {
+    lines.clear();
+
     int steps = data.main.NbSteps * data.main.NbStepsMultiplier;
 
     if (steps < 2)
@@ -110,22 +117,45 @@ class DrawingGenerator //<>//
 
     float angle = 0;
     float deltaAngle = 360.0 / data.main.NbLines;
-    float rotation =  data.main.Rotation *  data.main.RotationMultiplier + data.main.Rotation * data.main.RotationTwitch/100;
+    float rotation = data.main.Rotation * data.main.RotationMultiplier + data.main.Rotation * data.main.RotationTwitch / 100;
 
-    for (int line = 0; line < data.main.NbLines; line ++)
+    for (int line = 0; line < data.main.NbLines; line++)
     {        
-      angle = deltaAngle*line + data.main.StartAngle;
-      drawOneLine(steps, angle, rotation);
+      SpiralLine spiralLine = new SpiralLine();
+      angle = deltaAngle * line + data.main.StartAngle;
+      buildOneLine(spiralLine, steps, angle, rotation);
+      lines.add(spiralLine);
     }
 
     if (data.main.Mirror)
     {
-      rotation = - rotation;
-      for (int line = 0; line < data.main.NbLines; line ++)
+      rotation = -rotation;
+      for (int line = 0; line < data.main.NbLines; line++)
       {
-        angle = deltaAngle*line+ data.main.StartAngle;
-        drawOneLine(steps, angle, rotation);
+        SpiralLine spiralLine = new SpiralLine();
+        angle = deltaAngle * line + data.main.StartAngle;
+        buildOneLine(spiralLine, steps, angle, rotation);
+        lines.add(spiralLine);
       }
     }
   }
+
+  void draw()
+  {
+    if (data.any_change())
+    {
+      update();
+      data.reset_all_changes();
+    }
+
+    for (int i = 0; i < lines.size(); i++)
+    {
+      lines.get(i).draw();
+    }
+  }
+}
+
+// SpiralLine: polyline for spiral that draws points as individual line segments (point-to-point)
+class SpiralLine extends SegmentedPolyline
+{
 }
