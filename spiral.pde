@@ -41,20 +41,15 @@ void draw()
 {
   start_draw();
 
-  // recenter
   pushMatrix();
   translate(width/2, height/2);
-  scale(data.page.global_scale,data.page .global_scale);
- // translate(-width/2, -height/2);
+  scale(data.page.global_scale, data.page.global_scale);
 
   if (data.changed)
   {
     dataGui.update_ui();
   }
-  
-  // drawer.center = new PVector(width/2, height/2);
-  
-  drawer.data = data;
+
   drawer.draw();
 
   popMatrix();

@@ -1,6 +1,5 @@
 class SpiralGenerator //<>//
 {
-  SpiralsData data;
   ArrayList<SpiralLine> lines;
 
   PVector center = new PVector(0, 0);
