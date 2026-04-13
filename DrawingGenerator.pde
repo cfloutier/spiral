@@ -4,8 +4,7 @@ class DrawingGenerator //<>//
 
   PVector center = new PVector(0, 0);
   
-  
-  
+
   void line(float xFrom, float yFrom, float xTo, float yTo)
   {
      if (data.page.clipping) 
