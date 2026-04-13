@@ -6,7 +6,7 @@ import processing.svg.*;
 
 SpiralsData data;
 DataGUI dataGui;
-SpiralGenerator drawer;
+SpiralGenerator generator;
 
 PGraphics current_graphics;
 ControlP5 cp5;
@@ -15,7 +15,7 @@ void setup()
 {
   size(1200, 800);
 
-  drawer =  new SpiralGenerator();
+  generator =  new SpiralGenerator();
   data = new SpiralsData();
   dataGui = new DataGUI(data);
   
@@ -50,7 +50,7 @@ void draw()
     dataGui.update_ui();
   }
 
-  drawer.draw();
+  generator.draw();
 
   popMatrix();
   end_draw();
