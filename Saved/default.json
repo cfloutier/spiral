@@ -7,17 +7,19 @@
   "Page": {
     "clipping": false,
     "clip_width": 753.3333129882812,
+    "margin": 0,
     "clip_height": 546.6666870117188,
-    "global_scale": 1
+    "paper_format": 1,
+    "global_scale": 0.6785714030265808
   },
   "Main": {
     "RotationMultiplier": 8,
-    "Radius": 384,
-    "RatioRadius": 1.0040000677108765,
-    "StartAngle": 0,
+    "Radius": 800,
+    "RatioRadius": 0.9813333749771118,
+    "StartAngle": 135.60000610351562,
     "NbLines": 3,
-    "NbSteps": 7,
-    "Rotation": 90.5999984741211,
+    "NbSteps": 27,
+    "Rotation": 67.19999694824219,
     "Mirror": false,
     "NbStepsMultiplier": 4,
     "RotationTwitch": 3

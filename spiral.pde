@@ -41,17 +41,33 @@ void draw()
 {
   start_draw();
 
-  pushMatrix();
-  translate(width/2, height/2);
-  scale(data.page.global_scale, data.page.global_scale);
-
   if (data.changed)
   {
     dataGui.update_ui();
   }
 
   generator.draw();
-
-  popMatrix();
+  
+  // Update export scale after drawing (for next frame's export)
+  if (!_record) {
+    BoundingBox bbox = computeBoundingBox();
+    file_ui.updateExportScale(bbox);
+  }
+  
   end_draw();
 }
+
+// Compute bounding box from all generator lines (specific to SpiralLine)
+BoundingBox computeBoundingBox()
+{
+  BoundingBox bbox = new BoundingBox();
+  
+  for (SpiralLine line : generator.lines) {
+    for (PVector point : line.points) {
+      bbox.addPoint(point);
+    }
+  }
+  
+  return bbox;
+}
+
