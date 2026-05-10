@@ -31,7 +31,7 @@ class DataGUI extends MainPanel
   {
     this.data = data;
 
-    file_ui = new FileGUI(data);
+    file_ui = new FileGUI(data, true);
     main_ui = new MainGUI(data.main); 
     style_ui = new StyleGUI(data.style); 
   }
