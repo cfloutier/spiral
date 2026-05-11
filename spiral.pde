@@ -58,17 +58,9 @@ void draw()
   end_draw();
 }
 
-// Compute bounding box from all generator lines (specific to SpiralLine)
+// Compute bounding box from all generator lines
 BoundingBox computeBoundingBox()
 {
-  BoundingBox bbox = new BoundingBox();
-  
-  for (SpiralLine line : generator.lines) {
-    for (PVector point : line.points) {
-      bbox.addPoint(point);
-    }
-  }
-  
-  return bbox;
+  return generator.group.getBoundingBox(data.page.clipping, data.page.clip_width, data.page.clip_height);
 }
 
