@@ -21,6 +21,7 @@ void setup()
   dataGui = new DataGUI(data);
   
   setupControls();
+  file_ui.export_group = generator.group;
    
   data.LoadSettings("./Saved/default.json");
   data.name = "default";
