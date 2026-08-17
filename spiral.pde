@@ -23,7 +23,7 @@ void setup()
   setupControls();
   file_ui.export_group = generator.group;
    
-  data.LoadSettings("./Saved/default.json");
+  data.LoadSettings("./Settings/default.json");
   data.name = "default";
 
   dataGui.setGUIValues();

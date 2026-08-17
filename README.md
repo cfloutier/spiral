@@ -35,7 +35,7 @@ The top button are Tabs.
 
 Files can be saved to and from json.
 
-the **"Saved"** Folder contain example of settings useful for starting and understanding the behvior of the components
+the **"Settings"** Folder contain example of settings useful for starting and understanding the behvior of the components
 
 you can alose export to differents formats : (svg, pdf and dxf)
 the **"Export"** directory contains differents example of export
