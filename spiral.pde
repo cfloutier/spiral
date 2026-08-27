@@ -10,6 +10,7 @@ SpiralGenerator generator;
 
 PGraphics current_graphics;
 ControlP5 cp5;
+ColorChooserPopup colorPopup;
 
 void setup() 
 {
@@ -35,6 +36,11 @@ void setupControls()
 { 
   cp5 = new ControlP5(this);
   cp5.getTab("default").setLabel("Hide GUI");
+  colorPopup = new ColorChooserPopup();
+  colorPopup.registerPalette("Default", DEFAULT_COLOR_PALETTE);
+  colorPopup.registerPalette("Rainbow", RAINBOW_COLOR_PALETTE);
+  colorPopup.registerPalette("POSCA", POSCA_COLOR_PALETTE);
+  colorPopup.registerPalette("Stabilo 88", STABILO88_COLOR_PALETTE);
   // addFileTab();
   dataGui.Init();
 }

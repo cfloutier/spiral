@@ -402,6 +402,38 @@ class GUIPanel implements ControlListener
     return grp;
   }
 
+  // Small square trigger button (tinted to the current color) that opens the
+  // shared ColorChooserPopup instead of laying the full swatch grid out
+  // inline - use this on any tab where addColorGroup() would take up too
+  // much space. A fixed-color frame button sits just behind/around it so the
+  // swatch stays visible even when it happens to match the page background.
+  Button addColorChooser(String name, ColorSetter target)
+  {
+    inlineLabel(name, 100);
+
+    cp5.addButton("colorchooserframe" + indexControler)
+      .setPosition(xPos - 2, yPos - 2)
+      .setSize(24, 24)
+      .setLabel("")
+      .moveTo(pageName)
+      .setColorBackground(color(120));
+    indexControler++;
+
+    Button bt = cp5.addButton("colorchooser" + indexControler)
+      .setPosition(xPos, yPos)
+      .setSize(20, 20)
+      .setLabel("")
+      .moveTo(pageName)
+      .setColorBackground(target.getColor());
+
+    indexControler++;
+    xPos += 26;
+
+    bt.plugTo(new ColorChooserTrigger(pageName, target, bt), "onClic");
+
+    return bt;
+  }
+
   Button addButton(String name)
   {
     int width_bt = 100;
