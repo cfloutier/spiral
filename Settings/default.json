@@ -1,16 +1,18 @@
 {
   "Style": {
     "backgroundColor": -16118253,
-    "lineColor": -2659,
+    "lineColor": -291840,
     "lineWidth": 0.9833333492279053
   },
   "Page": {
+    "clip_landscape": false,
     "clipping": false,
     "clip_width": 753.3333129882812,
     "margin": 0,
+    "clip_aspect_ratio": 0,
     "clip_height": 546.6666870117188,
     "paper_format": 1,
-    "global_scale": 0.6785714030265808
+    "global_scale": 0.7567569017410278
   },
   "Main": {
     "RotationMultiplier": 8,
