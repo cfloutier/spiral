@@ -34,6 +34,8 @@ class StyleGUI extends GUIPanel
   void setGUIValues()
   {
     lineWidth.setValue(style.lineWidth);
+    lineColor.setColorBackground(style.lineColor);
+    backgroundColor.setColorBackground(style.backgroundColor);
   }
 
   void setupControls()

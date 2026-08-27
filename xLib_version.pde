@@ -1,12 +1,37 @@
 String get_xlib_version()
 {
-  return "3.16.0";
+  return "3.17.0";
 }
 
 
 /*
 
  # CHANGELOG
+
+ ## [3.17.0] - 2026-08-27
+ - ColorChooserPopup gained a "Custom" mode alongside the palette buttons: a real HSB
+ picker - a saturation/brightness square (Slider2D, 200x200) next to a vertical hue bar
+ (Slider, 30 wide), each with a custom-rendered gradient PImage as its background
+ (buildSVImage()/buildHueImage(), loadPixels()/updatePixels() under colorMode(HSB,...),
+ restored to colorMode(RGB,255) immediately after - the rest of the app assumes RGB).
+ Dragging either control applies the resulting color live via the existing
+ ColorChooserTrigger.apply() path, without closing the popup (unlike a swatch pick) - you
+ close by switching tabs, same as everything else in this popup.
+ - Both controls are real ControlP5 controllers (not raw Processing drawing), so they get
+ rendering and drag interaction for free from ControlP5 itself - no changes needed to
+ MainPanel/GUIPanel's draw()/mousePressed() plumbing (dataGui.draw() is still never called
+ from spiral.pde's draw() loop, and it didn't need to be).
+ - Custom mode isn't one of the indexed palettes/_groups (a Slider/Slider2D pair isn't a
+ ColorGroup) - tracked as a separate _customMode boolean, with hideCurrent()/
+ refreshHighlight() factored out of showPalette() so both palette-switching and
+ showCustom() share the same hide-previous/show-new/re-highlight logic.
+ - New named listener classes (CustomModeButton, HueSliderListener, SVSliderListener),
+ matching PaletteSwitcher's existing style rather than anonymous classes.
+ - Fix: StyleGUI.setGUIValues() now retints the Line/Background Color trigger buttons from
+ style.lineColor/backgroundColor. Without it they stayed stuck on Style's hardcoded field
+ defaults (white/black) forever - addColorChooser() only tints a trigger once, at creation
+ time inside setupControls(), which runs *before* data.LoadSettings() in setup() overwrites
+ those fields with whatever was actually saved.
 
  ## [3.16.0] - 2026-08-27
  - ColorChooserPopup supports multiple named palettes. New ColorPalette (name + int[][]
