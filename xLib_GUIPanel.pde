@@ -3,6 +3,19 @@ int indexControler = 0;
 static final int StartX = 20;
 static final int StartY = 20;
 
+// One-call setup for the shared xLib GUI framework: creates cp5, renames its
+// built-in "default" tab to "Hide GUI" (that tab doubles as a fake-popup
+// surface, used by both xLib_FileUI.pde's Load/Save picker and
+// xLib_ColorChooser.pde's color picker), and sets up the shared color
+// chooser popup. Call once at the top of each project's own setupControls(),
+// before dataGui.Init().
+void init_xlib()
+{
+  cp5 = new ControlP5(this);
+  cp5.getTab("default").setLabel("Hide GUI");
+  setupColorPopup();
+}
+
 static class LabelsHandler
 {
   static public ArrayList<Textlabel> labels = new ArrayList<Textlabel>();
@@ -407,6 +420,10 @@ class GUIPanel implements ControlListener
   // inline - use this on any tab where addColorGroup() would take up too
   // much space. A fixed-color frame button sits just behind/around it so the
   // swatch stays visible even when it happens to match the page background.
+  // The frame is .lock()'d - non-interactive, purely decorative - so it
+  // can't intercept clicks meant for the swatch on top of it; without this,
+  // the two overlapping buttons occasionally ate the first click on the
+  // swatch (had to move the mouse away and back to get it to register).
   Button addColorChooser(String name, ColorSetter target)
   {
     inlineLabel(name, 100);
@@ -416,7 +433,8 @@ class GUIPanel implements ControlListener
       .setSize(24, 24)
       .setLabel("")
       .moveTo(pageName)
-      .setColorBackground(color(120));
+      .setColorBackground(color(120))
+      .lock();
     indexControler++;
 
     Button bt = cp5.addButton("colorchooser" + indexControler)
@@ -425,6 +443,7 @@ class GUIPanel implements ControlListener
       .setLabel("")
       .moveTo(pageName)
       .setColorBackground(target.getColor());
+    bt.bringToFront();
 
     indexControler++;
     xPos += 26;

@@ -144,15 +144,33 @@ class SVSliderListener
 // of small named buttons above the grid switches which one is visible.
 //
 // Custom mode: a saturation/brightness square (Slider2D) + a hue bar
-// (Slider), both real ControlP5 controls with a custom gradient PImage as
-// their background - rendering and drag interaction come for free from
-// ControlP5 itself, no custom draw()/mousePressed() plumbing needed (unlike
-// raw Processing drawing, which would have needed dataGui.draw() wired into
-// spiral.pde's draw() loop - it currently isn't, and ControlP5 controls
-// don't need it to be). Not one of the indexed palettes/_groups (a
-// Slider/Slider2D pair isn't a ColorGroup) - tracked as a separate
-// _customMode boolean instead.
-class ColorChooserPopup
+// (Slider). Drag interaction comes for free from ControlP5 (no custom
+// mousePressed() plumbing needed), but the gradient BACKGROUND does not:
+// Controller.setImages() is a no-op for these two controller types.
+// Confirmed by inspecting controlP5.jar directly - Controller.class embeds
+// the string "Image-based or custom displays are not yet implemented for
+// this type of controller. (" and Slider/Slider2D's own view classes
+// (SliderView/Slider2DView) only ever call fill()/rect(), never image() -
+// setImages() silently does nothing on these two. Worked around by drawing
+// the gradient ourselves with a plain image() call in spiral.pde's draw()
+// (drawCustomBackgrounds(), called after end_draw() so it's in absolute
+// screen coordinates, matching where ControlP5 controls sit), *underneath*
+// where ControlP5 renders its controls a moment later - with both sliders'
+// own background set fully transparent (alpha 0) via setColorBackground()
+// so their flat fill() doesn't paint over the image. The crosshair (drawn
+// with the foreground/active color, left opaque) still shows on top.
+//
+// Not one of the indexed palettes/_groups (a Slider/Slider2D pair isn't a
+// ColorGroup) - tracked as a separate _customMode boolean instead.
+//
+// Declared `public`: registerMethod("draw", colorPopup) needs external
+// reflection (processing.core.PApplet$RegisteredMethods, no setAccessible())
+// to call its public draw() - Java's IllegalAccessException fires on that
+// even for a public *method* if the enclosing class isn't public too, and
+// this one wasn't. ("cannot access a member ... with modifiers 'public'" is
+// Java's confusing way of saying the *class* needs to be public, not that
+// the public modifier itself is somehow wrong.)
+public class ColorChooserPopup
 {
   ArrayList<ColorPalette> palettes = new ArrayList<ColorPalette>();
   ArrayList<ColorGroup> _groups = new ArrayList<ColorGroup>();
@@ -162,8 +180,12 @@ class ColorChooserPopup
   Button customButton;
   Slider2D svSlider;
   Slider hueSlider;
+  PImage _svImage;
+  PImage _hueImage;
+  float _svX, _svY, _hueX, _hueY;
   ColorChooserTrigger _trigger;
   boolean _initialized = false;
+  boolean _visible = false;
 
   color PALETTE_ACTIVE_COLOR   = color(70, 130, 220);
   color PALETTE_INACTIVE_COLOR = color(80);
@@ -235,28 +257,97 @@ class ColorChooserPopup
       pb.hide();
     customButton.hide();
 
-    float hueX = StartX + SV_SIZE + 10;
+    _svX = StartX;
+    _svY = gridY;
+    _hueX = StartX + SV_SIZE + 10;
+    _hueY = gridY;
 
     svSlider = cp5.addSlider2D("colorsv")
-      .setPosition(StartX, gridY)
+      .setLabel("Color")
+      .setPosition(_svX, _svY)
       .setSize(SV_SIZE, SV_SIZE)
       .setMinMax(0, 0, 1, 1)
+      .setColorBackground(color(0, 0, 0, 0))
       .moveTo("default");
     svSlider.enableCrosshair();
-    PImage svImg = buildSVImage(0, SV_SIZE, SV_SIZE);
-    svSlider.setImages(svImg, svImg, svImg);
+    _svImage = buildSVImage(0, SV_SIZE, SV_SIZE);
     svSlider.plugTo(new SVSliderListener(this), "onChange");
     svSlider.hide();
 
+    // Range given as (360, 0) rather than (0, 360) - ControlP5 maps a
+    // vertical slider as "drag up = value increases" regardless of range
+    // direction, opposite of our hue image/tick (hue 0 at the top, 360 at
+    // the bottom) - swapping min/max here inverts that mapping so dragging
+    // down moves toward higher hue, matching the gradient and the tick.
     hueSlider = cp5.addSlider("colorhue")
-      .setPosition(hueX, gridY)
+      .setLabel("Hue")
+      .setPosition(_hueX, _hueY)
       .setSize(HUE_WIDTH, SV_SIZE)
-      .setRange(0, 360)
+      .setRange(360, 0)
+      .setColorBackground(color(0, 0, 0, 0))
       .moveTo("default");
-    PImage hueImg = buildHueImage(HUE_WIDTH, SV_SIZE);
-    hueSlider.setImages(hueImg, hueImg, hueImg);
+    _hueImage = buildHueImage(HUE_WIDTH, SV_SIZE);
     hueSlider.plugTo(new HueSliderListener(this), "onChange");
     hueSlider.hide();
+  }
+
+  // Called from spiral.pde's draw(), after end_draw() (absolute screen
+  // coords, matching where the ControlP5 controls themselves sit) - draws
+  // the gradient images setImages() can't apply to Slider/Slider2D (see
+  // class comment above). Must run before ControlP5's own post-draw pass
+  // paints the (transparent-background) sliders/crosshair on top, which it
+  // does automatically every frame regardless of this call. Gated on our
+  // own _visible flag (set in show()/close()), not cp5.getTab("default")
+  // .isActive() - that returned false here even while the popup was
+  // visibly showing, so nothing ever got drawn.
+  // Called via registerMethod("draw", colorPopup) in spiral.pde's
+  // setupControls() - Processing invokes registered "draw" methods in
+  // registration order, and ControlP5 registers its own during `new
+  // ControlP5(this)`, so as long as we register after that (we do), this
+  // fires *after* ControlP5's own controls have rendered, drawing our
+  // gradient on top instead of underneath it. Must be `public` - unlike
+  // ControlP5's plugTo() (which setAccessible(true)s before invoking),
+  // Processing's own registerMethod reflection does not, and throws
+  // IllegalAccessException on a package-private method.
+  public void draw()
+  {
+    drawCustomBackgrounds();
+  }
+
+  // Draws the gradients, plus our own cursor markers - ControlP5's own
+  // crosshair/value-fill (drawn earlier in the same frame, see draw() above)
+  // end up completely covered by these images, same problem setImages() had,
+  // just moved from "background invisible" to "cursor invisible". Cheaper to
+  // draw a marker ourselves from the sliders' own current value than to try
+  // to sandwich our image between ControlP5's background and foreground
+  // passes (they're one atomic draw call, not interruptible from outside).
+  void drawCustomBackgrounds()
+  {
+    if (!_customMode || !_visible) return;
+
+    image(_svImage, _svX, _svY);
+    image(_hueImage, _hueX, _hueY);
+
+    float[] sv = svSlider.getArrayValue();
+    float cx = _svX + sv[0] * SV_SIZE;
+    float cy = _svY + sv[1] * SV_SIZE;
+    noFill();
+    rectMode(CENTER);
+    stroke(0);
+    strokeWeight(3);
+    rect(cx, cy, 10, 10);
+    stroke(255);
+    strokeWeight(1);
+    rect(cx, cy, 10, 10);
+    rectMode(CORNER);
+
+    float tickY = _hueY + (hueSlider.getValue() / 360.0) * SV_SIZE;
+    stroke(0);
+    strokeWeight(3);
+    line(_hueX - 2, tickY, _hueX + HUE_WIDTH + 2, tickY);
+    stroke(255);
+    strokeWeight(1);
+    line(_hueX - 2, tickY, _hueX + HUE_WIDTH + 2, tickY);
   }
 
   // colorMode() is global sketch state - every image builder here switches
@@ -300,8 +391,7 @@ class ColorChooserPopup
   void onHueChanged()
   {
     float hue = hueSlider.getValue();
-    PImage img = buildSVImage(hue, SV_SIZE, SV_SIZE);
-    svSlider.setImages(img, img, img);
+    _svImage = buildSVImage(hue, SV_SIZE, SV_SIZE);
     applyCustomColor();
   }
 
@@ -325,6 +415,25 @@ class ColorChooserPopup
       _trigger.apply(c);
   }
 
+  // Reads the trigger's current color and moves both sliders to match, so
+  // switching into Custom mode starts from whatever color is already there
+  // instead of wherever the sliders were last left.
+  void syncFromCurrentColor()
+  {
+    if (_trigger == null) return;
+
+    color c = _trigger.target.getColor();
+    colorMode(HSB, 360, 1, 1);
+    float h = hue(c);
+    float s = saturation(c);
+    float b = brightness(c);
+    colorMode(RGB, 255);
+
+    hueSlider.setValue(h);
+    svSlider.setValue(s, 1 - b);
+    _svImage = buildSVImage(h, SV_SIZE, SV_SIZE);
+  }
+
   void showPalette(int idx)
   {
     hideCurrent();
@@ -341,6 +450,8 @@ class ColorChooserPopup
   {
     hideCurrent();
     _customMode = true;
+
+    syncFromCurrentColor();
 
     svSlider.show();
     hueSlider.show();
@@ -372,6 +483,7 @@ class ColorChooserPopup
   {
     ensureInit();
     _trigger = trigger;
+    _visible = true;
 
     for (Button pb : _paletteButtons)
       pb.show();
@@ -394,6 +506,8 @@ class ColorChooserPopup
 
   void close()
   {
+    _visible = false;
+
     for (Button pb : _paletteButtons)
       pb.hide();
     customButton.hide();
@@ -402,4 +516,23 @@ class ColorChooserPopup
     if (_trigger != null)
       cp5.getTab(_trigger.tabName).bringToFront();
   }
+}
+
+// Creates the global `colorPopup` (still has to be declared per-project -
+// `ColorChooserPopup colorPopup;` next to `cp5` - Java requires the field
+// itself to exist in the sketch's own class), registers the built-in
+// palettes, and hooks its draw() in. Call once from setupControls(), right
+// after `cp5 = new ControlP5(this);` - registerMethod("draw", colorPopup)
+// needs to run after that so Processing calls it after ControlP5's own
+// registered draw callback (registration order = call order), which is what
+// lets the SV/hue gradients draw on top of ControlP5's rendering instead of
+// underneath it (see ColorChooserPopup.draw()/drawCustomBackgrounds()).
+void setupColorPopup()
+{
+  colorPopup = new ColorChooserPopup();
+  colorPopup.registerPalette("Default", DEFAULT_COLOR_PALETTE);
+  colorPopup.registerPalette("Rainbow", RAINBOW_COLOR_PALETTE);
+  colorPopup.registerPalette("POSCA", POSCA_COLOR_PALETTE);
+  colorPopup.registerPalette("Stabilo 88", STABILO88_COLOR_PALETTE);
+  registerMethod("draw", colorPopup);
 }

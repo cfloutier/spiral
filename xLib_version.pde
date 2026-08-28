@@ -1,6 +1,6 @@
 String get_xlib_version()
 {
-  return "3.17.0";
+  return "4.0.0";
 }
 
 
@@ -8,98 +8,21 @@ String get_xlib_version()
 
  # CHANGELOG
 
- ## [3.17.0] - 2026-08-27
- - ColorChooserPopup gained a "Custom" mode alongside the palette buttons: a real HSB
- picker - a saturation/brightness square (Slider2D, 200x200) next to a vertical hue bar
- (Slider, 30 wide), each with a custom-rendered gradient PImage as its background
- (buildSVImage()/buildHueImage(), loadPixels()/updatePixels() under colorMode(HSB,...),
- restored to colorMode(RGB,255) immediately after - the rest of the app assumes RGB).
- Dragging either control applies the resulting color live via the existing
- ColorChooserTrigger.apply() path, without closing the popup (unlike a swatch pick) - you
- close by switching tabs, same as everything else in this popup.
- - Both controls are real ControlP5 controllers (not raw Processing drawing), so they get
- rendering and drag interaction for free from ControlP5 itself - no changes needed to
- MainPanel/GUIPanel's draw()/mousePressed() plumbing (dataGui.draw() is still never called
- from spiral.pde's draw() loop, and it didn't need to be).
- - Custom mode isn't one of the indexed palettes/_groups (a Slider/Slider2D pair isn't a
- ColorGroup) - tracked as a separate _customMode boolean, with hideCurrent()/
- refreshHighlight() factored out of showPalette() so both palette-switching and
- showCustom() share the same hide-previous/show-new/re-highlight logic.
- - New named listener classes (CustomModeButton, HueSliderListener, SVSliderListener),
- matching PaletteSwitcher's existing style rather than anonymous classes.
- - Fix: StyleGUI.setGUIValues() now retints the Line/Background Color trigger buttons from
- style.lineColor/backgroundColor. Without it they stayed stuck on Style's hardcoded field
- defaults (white/black) forever - addColorChooser() only tints a trigger once, at creation
- time inside setupControls(), which runs *before* data.LoadSettings() in setup() overwrites
- those fields with whatever was actually saved.
-
- ## [3.16.0] - 2026-08-27
- - ColorChooserPopup supports multiple named palettes. New ColorPalette (name + int[][]
- colors) and ColorChooserPopup.registerPalette(name, colors), called once per project in
- setupControls() right after `colorPopup = new ColorChooserPopup();` (e.g.
- colorPopup.registerPalette("Rainbow", RAINBOW_COLOR_PALETTE)). One ColorGroup is built per
- registered palette (hidden, same technique as everything else in this popup), all starting
- at the same grid position so only the active one is ever visible; a row of small named
- buttons above the grid (PaletteSwitcher click handler) switches which one shows. Calling
- registerPalette() is optional - if none is called before the popup first opens, it falls
- back to a single "Default" palette exactly as before (3.15.0 behavior unchanged for
- projects that don't opt in).
- - xLib_ColorRef.pde: the old hardcoded 27-color ColorGroup.colors array is now the
- sketch-global DEFAULT_COLOR_PALETTE (ColorGroup.colors defaults to referencing it) so the
- palette registry can reuse the exact same array under the name "Default" instead of
- duplicating it. Added RAINBOW_COLOR_PALETTE, a 20-step evenly-spaced-hue rainbow (S=85%,
- B=95%) - the first of presumably several palettes to come; register it explicitly per
- project, it's not automatic like "Default".
- - Fix: palette-switcher buttons now show which one is active (blue vs. neutral gray
- background, refreshed on every showPalette() call) - grid-switching itself always worked,
- there was just no visual indicator of the current selection.
- - Added POSCA_COLOR_PALETTE: the 22 POSCA PC-1M (0.7mm) marker colors, read off the
- manufacturer's printed color chart (a visual approximation, not a calibrated/sampled
- source - nudge values if a swatch looks off next to the real pens).
- - Added STABILO88_COLOR_PALETTE: the 47 Stabilo point 88 fineliner colors, same
- read-off-a-chart caveat as POSCA_COLOR_PALETTE.
- - Every palette now leads with white then black. DEFAULT_COLOR_PALETTE and
- POSCA_COLOR_PALETTE already had both somewhere in the list - moved to the front rather
- than duplicated. RAINBOW_COLOR_PALETTE had neither - added both. STABILO88_COLOR_PALETTE
- had black (88/46) but no white in the real point 88 range - moved black to the front,
- added a plain white swatch ahead of it for consistency across palettes.
-
- ## [3.15.0] - 2026-08-27
- - Added xLib_ColorChooser (ColorChooserPopup): a shared swatch-grid popup, opened from a
- small square trigger button (GUIPanel.addColorChooser()) instead of laying the full
- 27-swatch ColorGroup grid out inline. Fakes a modal the same way xLib_FileUI.pde's
- Load/Save browser does - parks the grid on ControlP5's "default" tab and calls
- Tab.bringToFront() to show/hide, no backdrop, no click-blocking. One popup instance for
- the whole sketch, reused by every addColorChooser() trigger regardless of which tab it's
- on - requires each project's main .pde to declare a global `ColorChooserPopup colorPopup;`
- and instantiate it in setupControls() right after `cp5 = new ControlP5(this);` (can't be
- a static holder like GUIPanel's LabelsHandler, since unlike Textlabel, ColorGroup/GUIPanel
- are sketch-inner classes needing an enclosing instance).
- - Gotcha found the hard way: the popup's "open the popup" method is named show(), not
- open() - naming it open() made Processing's own preprocessor throw a
- "Syntax Error - Error on parameter or method declaration" at the *call site*, not a real
- Java error and not reproducible with any other method name. Some kind of reserved/
- special-cased handling of "open" in Processing's PDE grammar. Confirmed empirically by
- bisection (println in place of the call worked, colorPopup.open(...) with any argument
- count didn't, renaming to colorPopup.show(...) fixed it immediately). Avoid a method
- literally named `open` anywhere in xLib.
- - Breaking: ColorSetter gained `color getColor()` alongside the existing `setColor(color c)`
- - needed so a trigger button can show the color it currently holds. Every existing
- ColorSetter implementation (Style's Line/Background Color, and per-project ones such as
- image_dots' Debug tab Active Color) needs a one-line getColor() added.
- - xLib_Style.pde: Line Color / Background Color migrated from addColorGroup() (inline grid)
- to addColorChooser() (small tinted trigger button) as the first consumer of the new popup.
- - ColorGroup now tracks its created ColorButtons in `buttons` (ArrayList<ColorButton>),
- needed by ColorChooserPopup to show/hide them - no behavior change for existing
- addColorGroup() inline usage.
- - addColorChooser() now also: adds an inline label (was missing entirely); draws a fixed
- mid-gray 24x24 frame button just behind/around the 20x20 swatch button, so the trigger
- stays visible even when its color happens to match the page background; and re-tints the
- trigger button immediately after a pick (ColorChooserTrigger now carries a reference to
- its own swatchButton, since nothing else was watching the underlying color field for
- changes - ColorChooserPopup.show() takes the whole ColorChooserTrigger now, not just a
- tab name + ColorSetter, so pick() can call trigger.apply(c) to update both the data and
- the button in one place).
+ ## [4.0.0] - 2026-08-27
+ - New ColorChooser popup: replaces the big inline swatch grid with a small square
+ trigger button (any tab can offer one via GUIPanel.addColorChooser()) that opens a
+ shared color-picker overlay.
+ - Several built-in swatch palettes to pick from (Default, Rainbow, POSCA, Stabilo 88),
+ switchable via buttons at the top of the popup - projects can register their own too.
+ - A "Custom" mode for exact color selection: a saturation/brightness square plus a hue
+ bar, both draggable, updating the color live as you drag.
+ - The Style tab's Line Color / Background Color now use this new picker.
+ - Breaking: every project's own setup() must call the new init_xlib() (creates cp5,
+ labels its "default" tab, sets up the color popup) instead of doing that itself -
+ replace `cp5 = new ControlP5(this); cp5.getTab("default").setLabel("Hide GUI");` with
+ `init_xlib();`. Also needs a `ColorChooserPopup colorPopup;` global declared next to
+ `cp5` (Java requires the field itself to live in the sketch's own class - can't be
+ hidden inside init_xlib()).
 
  ## [3.14.0] - 2026-08-26
  - Removed ColorRef from xLib_Style/xLib_ColorRef. Style.lineColor/backgroundColor are now
