@@ -35,7 +35,6 @@ void setup()
 void setupControls()
 { 
   init_xlib();
-  // addFileTab();
   dataGui.Init();
 }
 
